@@ -1249,18 +1249,17 @@ function startGame(){
   G={cat,pool:shuffled,idx:0,score:0,strikes:0,streak:0,setP:null,chalP:null,locked:false,cMax:7,over:false,cycle:1};
   updateGameTheme();
   updateHUD();
-  showScreen('game');
   document.getElementById('statDisp').textContent=cat.lbl.toUpperCase();
   const sport=SPORTS[currentSport];
-  // Preload first 6 images for a warm cache
-  shuffled.slice(0,6).forEach(p=>{const img=new Image();img.src=sport.imgFn(p).url;});
-  // Wait for the first two (set + chal) to load before dealing, eliminating the initial headshot lag
+  // Preload background images
+  shuffled.slice(2,8).forEach(p=>{const img=new Image();img.src=sport.imgFn(p).url;});
+  // Wait for the first two images to load before showing the game screen
   const first2=shuffled.slice(0,2).map(p=>new Promise(res=>{
     const img=new Image();
     img.onload=img.onerror=res;
     img.src=sport.imgFn(p).url;
   }));
-  Promise.all(first2).then(()=>dealRound());
+  Promise.all(first2).then(()=>{showScreen('game');dealRound();});
 }
 
 async function showLB(){
